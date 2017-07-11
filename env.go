@@ -102,28 +102,14 @@ func parseField(value reflect.Value, field reflect.StructField, rawVal string) e
 	case reflect.String:
 		return handleString(value, rawVal)
 
-	case reflect.Int8:
-		return handleInt(value, field, rawVal, 8)
-	case reflect.Int16:
-		return handleInt(value, field, rawVal, 16)
-	case reflect.Int, reflect.Int32:
-		return handleInt(value, field, rawVal, 32)
-	case reflect.Int64:
-		return handleInt(value, field, rawVal, 64)
+	case reflect.Int8, reflect.Int16, reflect.Int, reflect.Int32, reflect.Int64:
+		return handleInt(value, field, rawVal)
 
-	case reflect.Uint8:
-		return handleUint(value, field, rawVal, 8)
-	case reflect.Uint16:
-		return handleUint(value, field, rawVal, 16)
-	case reflect.Uint, reflect.Uint32:
-		return handleUint(value, field, rawVal, 32)
-	case reflect.Uint64:
-		return handleUint(value, field, rawVal, 64)
+	case reflect.Uint8, reflect.Uint16, reflect.Uint, reflect.Uint32, reflect.Uint64:
+		return handleUint(value, field, rawVal)
 
-	case reflect.Float32:
-		return handleFloat(value, field, rawVal, 32)
-	case reflect.Float64:
-		return handleFloat(value, field, rawVal, 64)
+	case reflect.Float32, reflect.Float64:
+		return handleFloat(value, field, rawVal)
 
 	case reflect.Slice:
 		return handleSlice(value, field, rawVal)
@@ -153,31 +139,14 @@ func handleSlice(value reflect.Value, field reflect.StructField, rawVal string) 
 	case sliceOfStrings:
 		return handleStringSlice(value, arr)
 
-	case sliceOfInt8s:
-		return handleIntSlice(value, field, arr, 8)
-	case sliceOfInt16s:
-		return handleIntSlice(value, field, arr, 16)
-	case sliceOfInt32s, sliceOfInts:
-		return handleIntSlice(value, field, arr, 32)
-	case sliceOfInt64s:
-		return handleIntSlice(value, field, arr, 64)
+	case sliceOfInt8s, sliceOfInt16s, sliceOfInt32s, sliceOfInts, sliceOfInt64s, sliceOfDurations:
+		return handleIntSlice(value, field, arr)
 
-	case sliceOfUint8s:
-		return handleUintSlice(value, field, arr, 8)
-	case sliceOfUint16s:
-		return handleUintSlice(value, field, arr, 16)
-	case sliceOfUint32s, sliceOfUints:
-		return handleUintSlice(value, field, arr, 32)
-	case sliceOfUint64s:
-		return handleUintSlice(value, field, arr, 64)
+	case sliceOfUint8s, sliceOfUint16s, sliceOfUint32s, sliceOfUints, sliceOfUint64s:
+		return handleUintSlice(value, field, arr)
 
-	case sliceOfFloat32s:
-		return handleFloatSlice(value, field, arr, 32)
-	case sliceOfFloat64s:
-		return handleFloatSlice(value, field, arr, 64)
-
-	case sliceOfDurations:
-		return handleIntSlice(value, field, arr, 64)
+	case sliceOfFloat32s, sliceOfFloat64s:
+		return handleFloatSlice(value, field, arr)
 
 	case sliceOfUrlPointers:
 		return handleUrlSlice(value, arr)

@@ -1,9 +1,11 @@
 package env
 
 import (
+	"fmt"
 	"net/url"
 	"reflect"
 	"time"
+	"unsafe"
 )
 
 var (
@@ -32,4 +34,36 @@ var (
 	sliceOfDurations = reflect.TypeOf([]time.Duration{})
 
 	sliceOfUrlPointers = reflect.TypeOf([]*url.URL{})
+
+	kindSizes = map[reflect.Kind]int{
+		reflect.Int8:  int(unsafe.Sizeof(int8(0)) * 8),
+		reflect.Int16: int(unsafe.Sizeof(int16(0)) * 8),
+		reflect.Int32: int(unsafe.Sizeof(int32(0)) * 8),
+		reflect.Int64: int(unsafe.Sizeof(int64(0)) * 8),
+		reflect.Int:   int(unsafe.Sizeof(int(0)) * 8),
+
+		reflect.Uint8:  int(unsafe.Sizeof(uint8(0)) * 8),
+		reflect.Uint16: int(unsafe.Sizeof(uint16(0)) * 8),
+		reflect.Uint32: int(unsafe.Sizeof(uint32(0)) * 8),
+		reflect.Uint64: int(unsafe.Sizeof(uint64(0)) * 8),
+		reflect.Uint:   int(unsafe.Sizeof(uint(0)) * 8),
+
+		reflect.Float32: int(unsafe.Sizeof(float32(0)) * 8),
+		reflect.Float64: int(unsafe.Sizeof(float64(0)) * 8),
+	}
 )
+
+func getSize(field reflect.StructField) (int, error) {
+	var sizeType reflect.Type // Type to actually analyze for size
+	if field.Type.Kind() == reflect.Slice {
+		sizeType = field.Type.Elem()
+	} else {
+		sizeType = field.Type
+	}
+
+	size, exists := kindSizes[sizeType.Kind()]
+	if !exists {
+		return 0, fmt.Errorf("invalid uint type: %s", field.Type.Kind())
+	}
+	return size, nil
+}

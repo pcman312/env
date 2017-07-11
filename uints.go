@@ -6,11 +6,11 @@ import (
 	"strconv"
 )
 
-func handleUint(ref reflect.Value, structField reflect.StructField, rawVal string, size int) error {
+func handleUint(ref reflect.Value, structField reflect.StructField, rawVal string) error {
 	if rawVal == "" {
 		return nil
 	}
-	val, err := parseUint(structField, rawVal, size)
+	val, err := parseUint(structField, rawVal)
 	if err != nil {
 		return err
 	}
@@ -18,27 +18,29 @@ func handleUint(ref reflect.Value, structField reflect.StructField, rawVal strin
 	return nil
 }
 
-func parseUint(structField reflect.StructField, rawVal string, size int) (uint64, error) {
+func parseUint(field reflect.StructField, rawVal string) (uint64, error) {
+	size, err := getSize(field)
+
 	i, err := strconv.ParseUint(rawVal, 10, size)
 	if err != nil {
 		return 0, err
 	}
 
 	// Get min/max values to check against
-	min, err := getUintTag(structField, "min", 0, size)
+	min, err := getUintTag(field, "min", 0, size)
 	if err != nil {
 		return 0, err
 	}
-	max, err := getUintTag(structField, "max", maxUints[size], size)
+	max, err := getUintTag(field, "max", maxUints[size], size)
 	if err != nil {
 		return 0, err
 	}
 
 	if i < min {
-		return 0, fmt.Errorf("%s must be at least %d", structField.Name, min)
+		return 0, fmt.Errorf("%s must be at least %d", field.Name, min)
 	}
 	if i > max {
-		return 0, fmt.Errorf("%s must be no more than %d", structField.Name, max)
+		return 0, fmt.Errorf("%s must be no more than %d", field.Name, max)
 	}
 
 	return i, nil
@@ -56,7 +58,7 @@ func getUintTag(structField reflect.StructField, tag string, defaultVal uint64, 
 	return defaultVal, nil
 }
 
-func handleUintSlice(ref reflect.Value, structField reflect.StructField, rawArr []string, size int) error {
+func handleUintSlice(ref reflect.Value, structField reflect.StructField, rawArr []string) error {
 	if len(rawArr) == 0 {
 		return nil
 	}
@@ -88,7 +90,7 @@ func handleUintSlice(ref reflect.Value, structField reflect.StructField, rawArr 
 func getUint8Slice(structField reflect.StructField, split []string) ([]uint8, error) {
 	arr := make([]uint8, len(split), len(split))
 	for i, raw := range split {
-		val, err := parseUint(structField, raw, 8)
+		val, err := parseUint(structField, raw)
 		if err != nil {
 			return arr, err
 		}
@@ -100,7 +102,7 @@ func getUint8Slice(structField reflect.StructField, split []string) ([]uint8, er
 func getUint16Slice(structField reflect.StructField, split []string) ([]uint16, error) {
 	arr := make([]uint16, len(split), len(split))
 	for i, raw := range split {
-		val, err := parseUint(structField, raw, 16)
+		val, err := parseUint(structField, raw)
 		if err != nil {
 			return arr, err
 		}
@@ -112,7 +114,7 @@ func getUint16Slice(structField reflect.StructField, split []string) ([]uint16, 
 func getUint32Slice(structField reflect.StructField, split []string) ([]uint32, error) {
 	arr := make([]uint32, len(split), len(split))
 	for i, raw := range split {
-		val, err := parseUint(structField, raw, 32)
+		val, err := parseUint(structField, raw)
 		if err != nil {
 			return arr, err
 		}
@@ -124,7 +126,7 @@ func getUint32Slice(structField reflect.StructField, split []string) ([]uint32, 
 func getUint64Slice(structField reflect.StructField, split []string) ([]uint64, error) {
 	arr := make([]uint64, len(split), len(split))
 	for i, raw := range split {
-		val, err := parseUint(structField, raw, 64)
+		val, err := parseUint(structField, raw)
 		if err != nil {
 			return arr, err
 		}
@@ -136,7 +138,7 @@ func getUint64Slice(structField reflect.StructField, split []string) ([]uint64, 
 func getUintSlice(structField reflect.StructField, split []string) ([]uint, error) {
 	arr := make([]uint, len(split), len(split))
 	for i, raw := range split {
-		val, err := parseUint(structField, raw, 32)
+		val, err := parseUint(structField, raw)
 		if err != nil {
 			return arr, err
 		}
