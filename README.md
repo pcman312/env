@@ -28,8 +28,8 @@ if err != nil {
 3. ???
 4. Profit
 
-# What fields does it support?
-It currently supports these fields:
+# What types does it support?
+It currently supports these types:
 - bool
 - string
 - int
