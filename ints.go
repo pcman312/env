@@ -6,18 +6,11 @@ import (
 	"reflect"
 	"strconv"
 	"time"
-	"unsafe"
 )
 
 var (
 	minDuration = time.Duration(math.MinInt64)
 	maxDuration = time.Duration(math.MaxInt64)
-
-	int8Size  = int(unsafe.Sizeof(int8(0)) * 8)
-	int16Size = int(unsafe.Sizeof(int16(0)) * 8)
-	int32Size = int(unsafe.Sizeof(int32(0)) * 8)
-	int64Size = int(unsafe.Sizeof(int64(0)) * 8)
-	intSize   = int(unsafe.Sizeof(int(0)) * 8)
 )
 
 func handleInt(value reflect.Value, field reflect.StructField, rawVal string) error {
