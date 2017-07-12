@@ -1,4 +1,6 @@
 # env
+[![Build Status](https://travis-ci.org/pcman312/env.svg?branch=master)](https://travis-ci.org/pcman312/env)
+
 Golang environment parser similar in functionality to the JSON parser
 
 This is heavily influenced by https://github.com/caarlos0/env and can be thought of as a fork and expansion on that
