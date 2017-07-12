@@ -1,6 +1,15 @@
 language: go
-
 go:
-  # 1.6.x doesn't have reflect.StructField.Tag.Lookup()
-  # 1.7.x doesn't have rand.Uint64() (for tests only)
-  - 1.8.x
+# 1.6.x doesn't have reflect.StructField.Tag.Lookup()
+# 1.7.x doesn't have rand.Uint64() (for tests only)
+- 1.8.x
+before_install:
+- go get github.com/mattn/goveralls
+- go get golang.org/x/tools/cmd/cover
+script:
+- go test -v -cover -race -coverprofile=coverage.out
+after_script:
+- goveralls -coverprofile=coverage.out -service=travis-ci -repotoken=$COVERALLS_TOKEN
+env:
+  global:
+    secure: I0A8Dc2VqUzLij8JlXsReojGM55yjYUgDlq1+fb/RyG36fLbVcIs7p/u5ukKChK7U0dKnXEgI8k3rwBwh6xf+XDhtvVdGRxoxBmcVLiyfnarRR8dphxMdV5hf/HB9pYbpuaqPiXR/umJem/TUCkPgYjsSe3oCQWaq1UKrG49zoOcbNUO9/3PF7kpDlg8vlLhf7JwBv039ryZrMVp3cSK1DAAdax2vjyU02XnjsPQ131hsx/RRRxZZAslZE/iKLM+YadQYW8lyG3vqGBs1iMbp4p8WghIEN4ZlIn2S/futA9rF2rPN+VSsHHp9Bq5LLLBU/Pe24OQ/LG37sumg6c0gokAH7PZtVO6HMNzDUmLx5lIhzGA3mWwLtuFVQuShaPc0bxBqThJYzWBnkNUgZXIoo2V4TusKcsW1N5aytMKyR4mTuLuIc5MW1y+2epOvDEHSeVpqGK8LSiraZhYgxJvMsY8BKr3G8APEZE0XEuoko5+YItbkZBE4ue2Iyg/1ATpS6ShtsriAV+pAiVJDc/UR39vXPBldLQHPkqJybVYI4MWAXeymyIpHE8OX37zQj3MMVSWZw5YNoOqpBQe1OjIBiPMWYCpQ5BhVqR2IiBuimdnO/HZLk4YBaJAe3jZ7DYKvcAU44JnT0/UUf6LHqXwCnxm+55E342jWwYJq+MTVsE=
