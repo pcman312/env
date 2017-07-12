@@ -70,17 +70,6 @@ func TestParse(t *testing.T) {
 		So(err, ShouldEqual, ErrNotStructPointer)
 	})
 
-	Convey("Bad required tag", t, func() {
-		type BadStruct struct {
-			BadRequiredField string `env:"badfield" required:"asdf"`
-		}
-
-		actual := &BadStruct{}
-		err := Parse(actual)
-		So(err, ShouldNotBeNil)
-		So(err.Error(), ShouldContainSubstring, "either true or false")
-	})
-
 	Convey("Unsupported type", t, func() {
 		type MyStruct struct {
 			Str string
@@ -118,6 +107,17 @@ func TestParse(t *testing.T) {
 		err := Parse(actual)
 		So(err, ShouldNotBeNil)
 		So(err.Error(), ShouldContainSubstring, "unsupported pointer type")
+	})
+
+	Convey("Bad required tag", t, func() {
+		type BadStruct struct {
+			BadRequiredField string `env:"badfield" required:"asdf"`
+		}
+
+		actual := &BadStruct{}
+		err := Parse(actual)
+		So(err, ShouldNotBeNil)
+		So(err.Error(), ShouldContainSubstring, "either true or false")
 	})
 
 	Convey("Missing required field", t, func() {
