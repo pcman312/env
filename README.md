@@ -1,6 +1,6 @@
 # env
 [![Build Status](https://travis-ci.org/pcman312/env.svg?branch=master)](https://travis-ci.org/pcman312/env)
-[![Coverage Status](https://coveralls.io/repos/github/pcman312/env/badge.svg?branch=travis)](https://coveralls.io/github/pcman312/env?branch=travis)
+[![Coverage Status](https://coveralls.io/repos/github/pcman312/env/badge.svg?branch=master)](https://coveralls.io/github/pcman312/env?branch=master)
 
 # Why should I use this library?
 Are you using your environment for config values in your Go program? Are you tired of manually parsing each of those fields into structs? Then this library is for you! It can take your environment and parse it into a struct that you give it. Think of this like the built in JSON parser, except parsing from the environment.
