@@ -67,8 +67,8 @@ It also supports slices of each of these types:
 
 # What struct tags are available?
 - `env` - the name of the environment variable to parse
-- `default` - the default value of the environment variable if it's not found
-- `required` - is the field required? Must be either "true" or "false" or it will error
+- `required` - is the field required? Must be either "true" or "false" or it will error. Defaults to false
+- `default` - the default value of the environment variable if it's not found. If set with `required="true"`, it will behave as though required is false. Any attempt to set the value to `""` will result in the value becoming the default. Generally `required` and `default` don't need to be set together except as flags to the developer to indicate it's a required field even though a default is provided
 - `min` - minimum allowed value in the field. Only applies to numeric fields. Other fields will ignore this tag
 - `max` - maximum allowed value in the field. Only applies to numeric fields. Other fields will ignore this tag
 
