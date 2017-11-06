@@ -67,7 +67,6 @@ func getFieldValue(field reflect.StructField) (string, error) {
 
 	varName, hasEnv := field.Tag.Lookup("env")
 	if !hasEnv || varName == "" || varName == "-" {
-		fmt.Printf("Skipping field %s\n", field.Name)
 		return "", nil
 	}
 	varName = strings.TrimSpace(varName)
