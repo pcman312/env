@@ -117,7 +117,7 @@ func TestParse(t *testing.T) {
 		actual := &BadStruct{}
 		err := Parse(actual)
 		So(err, ShouldNotBeNil)
-		So(err.Error(), ShouldContainSubstring, "either true or false")
+		So(err.Error(), ShouldContainSubstring, "invalid syntax")
 	})
 
 	Convey("Missing required field", t, func() {
@@ -129,6 +129,39 @@ func TestParse(t *testing.T) {
 		err := Parse(actual)
 		So(err, ShouldNotBeNil)
 		So(err.Error(), ShouldContainSubstring, "missing required variable")
+	})
+
+	Convey("Ignored unsupported type", t, func() {
+		type UnsupportedStruct struct {
+			str string
+		}
+		type GoodStruct struct {
+			IgnoredField UnsupportedStruct `env:"-"`
+		}
+
+		actual := &GoodStruct{}
+		expected := &GoodStruct{}
+		err := Parse(actual)
+		So(err, ShouldBeNil)
+		So(actual, ShouldResemble, expected)
+	})
+
+	Convey("Ignore field with no struct tag", t, func() {
+		type GoodStruct struct {
+			GoodField    string `env:"goodfield"`
+			IgnoredField string
+		}
+
+		expectedGoodValue := "goodvalue"
+		os.Setenv("goodfield", expectedGoodValue)
+
+		actual := &GoodStruct{}
+		expected := &GoodStruct{
+			GoodField: expectedGoodValue,
+		}
+		err := Parse(actual)
+		So(err, ShouldBeNil)
+		So(actual, ShouldResemble, expected)
 	})
 }
 

@@ -46,7 +46,19 @@ func parseStruct(value reflect.Value) error {
 }
 
 func handleField(value reflect.Value, field reflect.StructField) error {
-	rawVal, err := getFieldValue(field)
+	envName := field.Tag.Get("env")
+	// Skip fields that do not have an env struct tag specified
+	if envName == "" || envName == "-" {
+		return nil
+	}
+
+	defaultVal := field.Tag.Get("default")
+	required, err := isRequired(field)
+	if err != nil {
+		return err
+	}
+
+	rawVal, err := getFieldValue(envName, defaultVal, required)
 	if err != nil {
 		return err
 	}
@@ -59,28 +71,18 @@ func handleField(value reflect.Value, field reflect.StructField) error {
 	return nil
 }
 
-func getFieldValue(field reflect.StructField) (string, error) {
-	required, err := isRequired(field)
-	if err != nil {
-		return "", fmt.Errorf("'required' tag on %s must be either true or false\n", field.Name)
-	}
-
-	varName, hasEnv := field.Tag.Lookup("env")
-	if !hasEnv || varName == "" || varName == "-" {
-		return "", nil
-	}
-	varName = strings.TrimSpace(varName)
+func getFieldValue(envName, defaultVal string, required bool) (string, error) {
+	envName = strings.TrimSpace(envName)
 
 	// Get value from environment
-	rawValue := strings.TrimSpace(os.Getenv(varName))
+	rawValue := strings.TrimSpace(os.Getenv(envName))
 	if rawValue != "" {
 		return rawValue, nil
 	}
 
-	// No value in environment found, look at the default
-	defaultVal := strings.TrimSpace(field.Tag.Get("default"))
+	// No value in environment found
 	if defaultVal == "" && required {
-		return "", fmt.Errorf("missing required variable [%s]", varName)
+		return "", fmt.Errorf("missing required variable [%s]", envName)
 	}
 	return defaultVal, nil
 }
